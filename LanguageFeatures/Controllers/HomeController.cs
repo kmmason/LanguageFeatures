@@ -56,14 +56,56 @@ namespace LanguageFeatures.Controllers
                 {
                     new Product {Name = "Kayak", Price = 275M },
                     new Product {Name = "Lifejacket", Price = 48.95M },
-                    new Models.Product {Name = "Soccerball", Price = 34.95M },
+                    new Product {Name = "Soccerball", Price = 34.95M },
                     new Product {Name = "Cornerflag", Price = 35.95M}
                 }
             };
              // get the total value of the products in the cart
             decimal cartTotal = cart.TotalPrices();
-
-            return View("Result", (object)String.Format("Total: {0:c}, cartTotal"));
+            
+            return View("Result", (object)String.Format("Total: {0:c}", cartTotal));
             }
+
+        public ViewResult UseExtensionMethod()
+        {
+            IEnumerable<Product> products = new ShoppingCart
+            {
+                Products = new List<Product>
+                {
+                    new Product {Name = "Kayak", Price = 275M },
+                    new Product {Name = "Lifejacket", Price = 48.95M },
+                    new Product {Name = "Soccerball", Price = 34.95M },
+                    new Product {Name = "Cornerflag", Price = 35.95M}
+                }
+            };
+            // get the total value of the products in the cart
+            decimal cartTotal = products.TotalPrices();
+            decimal arrayTotal = products.TotalPrices();
+
+            return View("Result", (object)String.Format("Cart Total: {0}, Array Total: {1}", cartTotal, arrayTotal));
         }
+
+        public ViewResult UseFilterExtensionMethod()
+        {
+            // create and populate ShoppingCart
+            IEnumerable<Product> products  = new ShoppingCart
+            {
+                Products = new List<Product>
+                {
+                    new Product {Name = "Kayak", Category = "Watersports",Price = 275M },
+                    new Product {Name = "Lifejacket", Category = "Watersports", Price = 48.95M },
+                    new Product {Name = "Soccerball", Category = "Soccer", Price = 19.50M },
+                    new Product {Name = "Cornerflag", Category = "Soccer", Price = 35.95M}
+                }
+            };
+
+            decimal total = 0;
+            foreach (Product prod in products.FilterByCategory("Soccer"))
+            {
+                total += prod.Price;
+            }
+
+            return View("Result", (object)String.Format("Total: {0}", total));
+        }
+    }
     } 
